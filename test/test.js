@@ -15,7 +15,7 @@ console.log = function() {
   saveConsole.apply(saveConsole, arguments);
 };
 
-var m = require('../adapter-core');
+var m = require('../adapter-core.js');
 console.log = saveConsole;
 
 test('log suppression', function(t) {
