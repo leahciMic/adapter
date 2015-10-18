@@ -15,7 +15,7 @@ console.log = function() {
   saveConsole.apply(saveConsole, arguments);
 };
 
-var m = require('..'); // Includes 'main' from package.json.
+var m = require('../adapter-core');
 console.log = saveConsole;
 
 test('log suppression', function(t) {
