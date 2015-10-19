@@ -1117,6 +1117,18 @@ if (typeof window === 'undefined' || !window.navigator) {
         var sections = SDPUtils.splitSections(self.remoteDescription.sdp);
         var sessionpart = sections.shift();
         sections.forEach(function(mediaSection, sdpMLineIndex) {
+          // a normal mediaSection starts with
+          // mediaSection m=audio 53181 UDP/TLS/RTP/SAVPF 106 0 8 101
+          // a "disabled" mediaSection starts with
+          // mediaSection m=video 0 UDP/TLS/RTP/SAVPF 0
+
+          var isDisabled = /m=(audio|video)\s0\s[^\s]*\s0/;
+
+          if (isDisabled.test(mediaSection)) {
+            console.log('NOT PARSING ', mediaSection);
+            return;
+          }
+
           var transceiver = self.transceivers[sdpMLineIndex];
           var iceGatherer = transceiver.iceGatherer;
           var iceTransport = transceiver.iceTransport;
@@ -1173,7 +1185,16 @@ if (typeof window === 'undefined' || !window.navigator) {
       var stream = new MediaStream();
       var sections = SDPUtils.splitSections(description.sdp);
       var sessionpart = sections.shift();
+
       sections.forEach(function(mediaSection, sdpMLineIndex) {
+        console.log('mediaSection', mediaSection, sdpMLineIndex);
+        var isDisabled = /m=(audio|video)\s0\s[^\s]*\s0/;
+
+        if (isDisabled.test(mediaSection)) {
+          console.log('NOT PARSING ', mediaSection);
+          return;
+        }
+
         var lines = SDPUtils.splitLines(mediaSection);
         var mline = lines[0].substr(2).split(' ');
         var kind = mline[0];
